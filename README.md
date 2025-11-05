@@ -28,7 +28,7 @@ dependencies {
 2. **`parents` Function Usage Example:**
    ```kotlin
    val stringParents = String::class.java.parents()
-   println(stringParents) 
+   println(stringParents)
    // Example output: [class java.lang.String, class java.lang.Object, interface java.io.Serializable, interface java.lang.Comparable, interface java.lang.CharSequence]
    ```
    This function returns a list of all parent classes and interfaces that the current class inherits from or implements.
