@@ -2,9 +2,7 @@ package one.wabbit.reflection
 
 import java.util.ArrayDeque
 
-/**
- * Returns the strict superclass chain excluding this, up to (and including) Object.
- */
+/** Returns the strict superclass chain excluding this, up to (and including) Object. */
 fun <T> Class<T>.superclasses(): List<Class<*>> {
     val superclasses = mutableListOf<Class<*>>()
     var superclass = this.superclass
@@ -15,8 +13,9 @@ fun <T> Class<T>.superclasses(): List<Class<*>> {
     return superclasses
 }
 
-/** Returns a BFS‑ordered list of all supertypes (superclass and interfaces).
- * Set includeSelf=true to include this class as the first element.
+/**
+ * Returns a BFS‑ordered list of all supertypes (superclass and interfaces). Set includeSelf=true to
+ * include this class as the first element.
  */
 fun <T> Class<T>.supertypes(includeSelf: Boolean = false): List<Class<*>> {
     val seen = LinkedHashSet<Class<*>>()
@@ -65,8 +64,9 @@ fun Class<*>.allInterfaces(): List<Class<*>> {
     val q = ArrayDeque<Class<*>>()
 
     // seed with every direct interface of every supertype (incl. self)
-    sequenceOf(this).plus(this.supertypesSequence(includeSelf = true))
-        .forEach { t -> t.interfaces.forEach { if (seen.add(it)) q.addLast(it) } }
+    sequenceOf(this).plus(this.supertypesSequence(includeSelf = true)).forEach { t ->
+        t.interfaces.forEach { if (seen.add(it)) q.addLast(it) }
+    }
 
     while (q.isNotEmpty()) {
         val i = q.removeFirst()
@@ -77,14 +77,20 @@ fun Class<*>.allInterfaces(): List<Class<*>> {
 
 /** Readable wrappers for assignability semantics. */
 fun Class<*>.isAssignableTo(target: Class<*>) = target.isAssignableFrom(this)
+
 fun Class<*>.isSubclassOf(target: Class<*>) = this != target && target.isAssignableFrom(this)
 
-/** Nearest common superclass (ignores interfaces); returns null only for pathological classloaders. */
+/**
+ * Nearest common superclass (ignores interfaces); returns null only for pathological classloaders.
+ */
 fun Class<*>.nearestCommonSuperclass(other: Class<*>): Class<*>? {
     if (this == other) return this
     val supers = LinkedHashSet<Class<*>>()
     var a: Class<*>? = this
-    while (a != null) { supers.add(a); a = a.superclass }
+    while (a != null) {
+        supers.add(a)
+        a = a.superclass
+    }
     var b: Class<*>? = other
     while (b != null) {
         if (b in supers) return b
@@ -93,7 +99,10 @@ fun Class<*>.nearestCommonSuperclass(other: Class<*>): Class<*>? {
     return null
 }
 
-/** Least upper bounds (per JLS intuition): intersection of supertypes, reduced to the most-specific set. */
+/**
+ * Least upper bounds (per JLS intuition): intersection of supertypes, reduced to the most-specific
+ * set.
+ */
 fun lub(types: Collection<Class<*>>): Set<Class<*>> {
     require(types.isNotEmpty()) { "types must not be empty" }
     val superSets = types.map { t -> sequenceOf(t).plus(t.supertypesSequence(true)).toSet() }
